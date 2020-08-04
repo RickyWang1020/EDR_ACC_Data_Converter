@@ -5,9 +5,9 @@ Date: 08/03/2020
 """
 
 from bs4 import BeautifulSoup as bs
-from copy_acc_edr import *
 import time
 import pandas as pd
+import yaml
 
 # xml file pre-processing
 def open_xml(path):
@@ -27,14 +27,14 @@ def open_xml(path):
 def parse_test_cases(bs_file):
     """
     Parse the .xml texts by test cases
-    :param bs_file: the BeautifulSoup object containing the whole text of .xml file
+    :param bs_file: the BeautifulSoup object containing the whole text of .xml file (the output of open_xml)
     :return: a list containing every test case's .xml text as separate elements
     """
     return bs_file.find_all("testcase")
 
 def get_all_results(testcases):
     """
-
+    Generate the test results for every test cases from the raw data
     :param testcases: a list containing every test case's .xml text as separate elements (the output of parse_test_cases)
     :return: a list containing several lists, each list storing several strings representing the raw results
     """
@@ -56,6 +56,11 @@ def get_all_results(testcases):
     return all_results
 
 def generate_single_testcase_dic(result_code):
+    """
+    For each test case's raw data, split the data into data type name and data results
+    :param result_code: a list containing several strings representing the raw results
+    :return: a dictionary, the keys are the name of data type, the values are the lists of data results
+    """
     dic = {}
 
     for c in result_code:
@@ -69,6 +74,11 @@ def generate_single_testcase_dic(result_code):
     return dic
 
 def combine_every_two_rows(to_combine):
+    """
+    For ACC data, need to combine every two rows of data into one row
+    :param to_combine: a list containing the EDR data need to be combined
+    :return: a list
+    """
     to_return = []
     for m in range(0, len(to_combine), 2):
         current_element, next_element = to_combine[m], to_combine[m+1]
@@ -77,6 +87,13 @@ def combine_every_two_rows(to_combine):
 
 
 def generate_dataframe(dictionary, wanted_FA = ["FA13", "FA14", "FA15"], wanted_B0 = ["B032", "B033", "B034", "B035", "B036", "B037", "B042", "B043", "B052", "B053"]):
+    """
+    From the all-data dictionary of one test case, pick out the data we want and put them in dataframes
+    :param dictionary: a dictionary (the output of generate_single_testcase_dic)
+    :param wanted_FA: the EDR data type name we want (has default values, subject to changes)
+    :param wanted_B0: the ACC data type name we want (has default values, subject to changes)
+    :return: a tuple of two dataframes, one is EDR dataframe and another is ACC dataframe
+    """
     to_add_FA = {}
     to_add_B0 = {}
 
@@ -108,6 +125,22 @@ def generate_dataframe(dictionary, wanted_FA = ["FA13", "FA14", "FA15"], wanted_
 
     return FA_df, B0_df
 
+def read_config(file_path):
+    """
+    Read the config file and generate the information from that
+    :param file_path: the path where the yaml config file locates
+    :return: a dictionary containing the information in the yaml file
+    """
+    with open(file_path, "r", encoding='utf-8') as y_file:
+        config_file = yaml.load(y_file, Loader=yaml.FullLoader)
+    return config_file
+
 def update_pbar(progress_bar, progress):
+    """
+    Updating the progressbar object
+    :param progress_bar: the prograssbar object
+    :param progress: a number representing the current progress
+    :return: None
+    """
     progress_bar.update(progress)
     time.sleep(0.01)
