@@ -24,7 +24,7 @@ This program has been tested on PyCharm and IDLE for Windows10.
 
 (3) Run the command below to install the required Python modules:
    
-    pip install -r modules_to_import\requirements.txt
+    pip install -r modules_to_import/requirements.txt
 
 ## Run the Program
 Run `main.py`, assign the directories for source data (.xml), template excel (.xlsx), and the target folder for putting the processed excel files in the tkinter window, and wait until the progressbar reaches 100%.
