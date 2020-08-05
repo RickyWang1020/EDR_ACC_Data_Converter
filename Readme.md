@@ -1,7 +1,7 @@
 # EDR_ACC_Data_Converter
 
 ## About This Program
-This is a simple program to convert the raw EDR and ACC test data in .xml form into .xlsx files, with calculation functions and Excel Template pre-set and subject to change.
+This program automatically converts the raw EDR and ACC test data in .xml form into Excel .xlsx files, with calculation functions and Excel Template pre-set and subject to change.
 
 This program has been tested on PyCharm and IDLE for Windows10.
 
