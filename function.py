@@ -1,18 +1,17 @@
 """
 Function: pre-processing of .xml file and creating pandas dataframe for each test cases' data
 Author: Xinran Wang
-Date: 08/03/2020
+Date: 08/05/2020
 """
 
 from bs4 import BeautifulSoup as bs
-import time
 import pandas as pd
 import yaml
 
 # xml file pre-processing
 def open_xml(path):
     """
-    Open and preprocess the original .xml file
+    Open and pre-process the original .xml file
     :param path: the absolute path of the .xml file
     :return: a BeautifulSoup object that stores the whole text of .xml file
     """
@@ -134,13 +133,3 @@ def read_config(file_path):
     with open(file_path, "r", encoding='utf-8') as y_file:
         config_file = yaml.load(y_file, Loader=yaml.FullLoader)
     return config_file
-
-def update_pbar(progress_bar, progress):
-    """
-    Updating the progressbar object
-    :param progress_bar: the prograssbar object
-    :param progress: a number representing the current progress
-    :return: None
-    """
-    progress_bar.update(progress)
-    time.sleep(0.01)
