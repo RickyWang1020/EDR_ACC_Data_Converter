@@ -41,3 +41,23 @@ In `var_conf.yaml`:
     The dictionary's keys are the data types' names, and its values are the description texts of the corresponding data type.
         
 You can add, delete or refine the key-value pairs in these dictionaries if the coefficients for calculation or data types' descriptions have been changed.
+
+## Project Structure
+```
+EDR_ACC_Data_Converter/
+├── modules_to_import/                               # modules to download and import for this program
+│   ├── beautifulsoup4-4.9.1-py3-none-any.whl        # beautifulsoup
+│   ├── lxml-4.5.2-cp37-cp37m-win_amd64.whl          # lxml
+│   ├── openpyxl-3.0.4-py2.py3-none-any.whl          # openpyxl
+│   ├── progressbar2-3.51.4-py2.py3-none-any.whl     # progressbar
+│   ├── requirements.txt                             # use this txt to pip install
+│   └── soupsieve-2.0.1-py3-none-any.whl             # soupsieve (pre-req for beautifulsoup)
+├── copy_acc_edr.py                                  # copy the formats of the excel cells into the current test case's excel file
+├── excel.py                                         # operations of creating excel file and filling data into excel
+├── function.py                                      # pre-processing of .xml file and creating pandas dataframe for each test cases' data
+├── main.py                                          # the main function to run
+├── Readme.md
+├── select_file.py                                   # the tkinter functions for window display
+├── Template.xlsx                                    # template .xlsx file
+└── var_conf.yaml                                    # configuration file for some changeable variables
+```
