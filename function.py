@@ -54,23 +54,33 @@ def get_all_results(testcases):
         all_results.append(codes)
     return all_results
 
-def generate_single_testcase_dic(result_code):
+def generate_single_testcase(result_code):
     """
     For each test case's raw data, split the data into data type name and data results
     :param result_code: a list containing several strings representing the raw results
-    :return: a dictionary, the keys are the name of data type, the values are the lists of data results
+    :return: a tuple of two lists, one list contains the name of data type, another list contains the corresponding data list of every data type name
     """
-    dic = {}
+
+    name_list = []
+    data_list = []
+    visited = {}
 
     for c in result_code:
         lst = c.split(', ')
-        key = "".join([x[2:] for x in lst[1:3]])
-        val = lst[3:]
-        if key not in dic:
-            dic[key] = []
-        if val not in dic[key]:
-            dic[key].append(val)
-    return dic
+        name = "".join([x[2:] for x in lst[1:3]])
+        data = lst[3:]
+        if name not in visited:
+            visited[name] = 0
+        else:
+            visited[name] += 1
+        if visited[name] == 0:
+            name_list.append(name)
+        else:
+            name_list.append(name + "_" + str(visited[name]))
+        data_list.append(data)
+
+    return name_list, data_list
+
 
 def combine_every_two_rows(to_combine):
     """
@@ -85,7 +95,7 @@ def combine_every_two_rows(to_combine):
     return to_return
 
 
-def generate_dataframe(dictionary, wanted_FA = ["FA13", "FA14", "FA15"], wanted_B0 = ["B032", "B033", "B034", "B035", "B036", "B037", "B042", "B043", "B052", "B053"]):
+def generate_dataframe(name_lst, data_lst, wanted_FA = ["FA13", "FA14", "FA15"], wanted_B0 = ["B032", "B033", "B034", "B035", "B036", "B037", "B042", "B043", "B052", "B053"]):
     """
     From the all-data dictionary of one test case, pick out the data we want and put them in dataframes
     :param dictionary: a dictionary (the output of generate_single_testcase_dic)
@@ -96,31 +106,26 @@ def generate_dataframe(dictionary, wanted_FA = ["FA13", "FA14", "FA15"], wanted_
     to_add_FA = {}
     to_add_B0 = {}
 
-    for k in dictionary.keys():
-        if k in wanted_FA:
-            length_val = len(dictionary[k])
-            if length_val > 1:
-                for iterator in range(length_val):
-                    name = k + "_" + str(iterator + 1)
-                    to_add_FA[name] = dictionary[k][iterator]
-            else:
-                to_add_FA[k] = dictionary[k][0]
+    # to keep the patterns of the original data, avoid being shuffled by dictionary
+    to_add_FA_names = []
+    to_add_B0_names = []
 
-        elif k in wanted_B0:
-            length_val = len(dictionary[k])
-            if length_val > 1:
-                for iterator in range(length_val):
-                    name = k + "_" + str(iterator + 1)
-                    combined_list = combine_every_two_rows(dictionary[k][iterator])
-                    to_add_B0[name] = combined_list
-                    # to_add_B0[name + "_converted"] = calculate_combined(combined_list, k)
-            else:
-                combined_list = combine_every_two_rows(dictionary[k][0])
-                to_add_B0[k] = combined_list
-                # to_add_B0[k + "_converted"] = calculate_combined(combined_list, k)
+    for i in range(len(name_lst)):
+        name = name_lst[i]
+        data = data_lst[i]
+
+        if name[:4] in wanted_B0:
+            to_add_B0[name] = combine_every_two_rows(data)
+            to_add_B0_names.append(name)
+        elif name[:4] in wanted_FA:
+            to_add_FA[name] = data
+            to_add_FA_names.append(name)
 
     FA_df = pd.DataFrame(to_add_FA)
     B0_df = pd.DataFrame(to_add_B0)
+
+    FA_df = FA_df[to_add_FA_names]
+    B0_df = B0_df[to_add_B0_names]
 
     return FA_df, B0_df
 
@@ -133,3 +138,4 @@ def read_config(file_path):
     with open(file_path, "r", encoding='utf-8') as y_file:
         config_file = yaml.load(y_file, Loader=yaml.FullLoader)
     return config_file
+
