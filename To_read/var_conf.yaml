@@ -1,0 +1,24 @@
+coefficient:
+  B032: 0.00190792
+  B042: 0.00190792
+  B052: 0.00190792
+  B033: 0.00381577
+  B043: 0.00381577
+  B053: 0.00381577
+  B034: 0.25
+  B035: 0.25
+  B036: 0.125
+  B037: 0.125
+
+name_to_description:
+  B032: "Read Acceleration Record (On board Accelerometer lateral axis)\n读加速度记录(板上加速度传感器横轴Y）"
+  B042: "Read Acceleration Record (On board Accelerometer lateral axis)\n读加速度记录(板上加速度传感器横轴Y）"
+  B052: "Read Acceleration Record (On board Accelerometer lateral axis)\n读加速度记录(板上加速度传感器横轴Y）"
+  B033: "Read Acceleration Record (On board Accelerometer longitudinal axis)\n读加速度记录(板上加速度传感器纵轴X）"
+  B043: "Read Acceleration Record (On board Accelerometer longitudinal axis)\n读加速度记录(板上加速度传感器纵轴X）"
+  B053: "Read Acceleration Record (On board Accelerometer longitudinal axis)\n读加速度记录(板上加速度传感器纵轴X）"
+  B034: "Read Acceleration Record (Left Front Impact Sensor)\n读加速度记录(左侧前碰加速度传感器）"
+  B035: "Read Acceleration Record (Right Front Impact Sensor)\n读加速度记录(右侧前碰加速度传感器）"
+  B036: "Read Acceleration Record (Driver B-Pillar Side Impact Sensor)\n读加速度记录(左侧B柱侧碰加速度传感器）"
+  B037: "Read Acceleration Record (Right B-Pillar Side Impact Accelerometer Data)\n读加速度记录(右侧B柱侧碰加速度传感器）"
+
