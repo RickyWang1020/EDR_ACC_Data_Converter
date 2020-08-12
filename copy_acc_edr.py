@@ -1,7 +1,7 @@
 """
 Function: copy the formats of the excel cells into the current test case's excel file
 Author: Xinran Wang
-Date: 08/05/2020
+Date: 08/12/2020
 """
 
 import os
@@ -43,6 +43,9 @@ def process_acc_data(temp_dir, file_dir, data_file_name, acc_column, coeff_dic, 
     :param progressbar_length: the length of progressbar for processing this part of data
     :return: None
     """
+    acc_total_len = len(acc_column)
+    unit_len = progressbar_length / acc_total_len
+
     wb = load_workbook(temp_dir)
     acc_template = wb[wb.sheetnames[0]]
     acc_rows = acc_template.max_row
@@ -55,12 +58,9 @@ def process_acc_data(temp_dir, file_dir, data_file_name, acc_column, coeff_dic, 
 
     acc_prev_sheet_cols = 0
 
-    total_len = len(acc_column)
-    unit_len = progressbar_length / total_len
-
     for index, obj in enumerate(acc_column):
 
-        print("Creating slots for:", obj)
+        print("Creating slots for: " + obj + " (" + str(index+1) + " of " + str(acc_total_len) + ")")
         update_pbar(pbar, progressbar_hist + unit_len * (index + 1))
 
         if index == 0:
@@ -86,12 +86,13 @@ def process_acc_data(temp_dir, file_dir, data_file_name, acc_column, coeff_dic, 
                         acc_template.cell(rows + 1, col + 1).font)
                     acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).border = copy(
                         acc_template.cell(rows + 1, col + 1).border)
-                    acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).fill = copy(
+                    if acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).fill != acc_template.cell(rows + 1, col + 1).fill:
+                        acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).fill = copy(
                         acc_template.cell(rows + 1, col + 1).fill)
-                    acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).number_format = copy(
-                        acc_template.cell(rows + 1, col + 1).number_format)
-                    acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).protection = copy(
-                        acc_template.cell(rows + 1, col + 1).protection)
+                #     acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).number_format = copy(
+                #         acc_template.cell(rows + 1, col + 1).number_format)
+                #     acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).protection = copy(
+                #         acc_template.cell(rows + 1, col + 1).protection)
                     acc_sheet.cell(row=rows + 1, column=acc_prev_sheet_cols + col + 1 - low_bound).alignment = copy(
                         acc_template.cell(rows + 1, col + 1).alignment)
         acc_prev_sheet_cols += (3 - low_bound)
@@ -134,8 +135,10 @@ def process_edr_data(temp_dir, file_dir, data_file_name, edr_column, pbar, progr
     :param progressbar_length: the length of progressbar for processing this part of data
     :return: None
     """
-    wb = load_workbook(temp_dir)
+    edr_total_len = len(edr_column)
+    unit_len = progressbar_length / edr_total_len
 
+    wb = load_workbook(temp_dir)
     edr_template = wb[wb.sheetnames[1]]
     edr_rows = edr_template.max_row
     edr_columns = edr_template.max_column
@@ -155,12 +158,9 @@ def process_edr_data(temp_dir, file_dir, data_file_name, edr_column, pbar, progr
             cell2 = str(wm[i]).replace('(<CellRange ', '').replace('>,)', '')
             edr_merged.append(cell2)
 
-    total_len = len(edr_column)
-    unit_len = progressbar_length / total_len
-
     for index, obj in enumerate(edr_column):
 
-        print("Creating slots for:", obj)
+        print("Creating slots for: " + obj + " (" + str(index+1) + " of " + str(edr_total_len) + ")")
         update_pbar(pbar, progressbar_hist + unit_len * (index+1))
 
         for rows in range(edr_rows):
@@ -181,12 +181,13 @@ def process_edr_data(temp_dir, file_dir, data_file_name, edr_column, pbar, progr
                         edr_template.cell(rows + 1, col + 1).font)
                     edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).border = copy(
                         edr_template.cell(rows + 1, col + 1).border)
-                    edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).fill = copy(
+                    if edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).fill != edr_template.cell(rows + 1, col + 1).fill:
+                        edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).fill = copy(
                         edr_template.cell(rows + 1, col + 1).fill)
-                    edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).number_format = copy(
-                        edr_template.cell(rows + 1, col + 1).number_format)
-                    edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).protection = copy(
-                        edr_template.cell(rows + 1, col + 1).protection)
+                #     edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).number_format = copy(
+                #         edr_template.cell(rows + 1, col + 1).number_format)
+                #     edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).protection = copy(
+                #         edr_template.cell(rows + 1, col + 1).protection)
                     edr_sheet.cell(row=rows + 1, column=edr_prev_sheet_cols + col + 1).alignment = copy(
                         edr_template.cell(rows + 1, col + 1).alignment)
         edr_prev_sheet_cols += 5
@@ -195,8 +196,13 @@ def process_edr_data(temp_dir, file_dir, data_file_name, edr_column, pbar, progr
         b_col = get_column_letter(edr_prev_sheet_cols - 3)
         c_col = get_column_letter(edr_prev_sheet_cols - 2)
         d_col = get_column_letter(edr_prev_sheet_cols - 1)
+
+        convert_col = {"A": a_col, "B": b_col, "C": c_col, "D": d_col}
+
         for cell in edr_merged:
-            new = cell.replace("A", a_col).replace("B", b_col).replace("C", c_col).replace("D", d_col)
+            first_letter = cell[0]
+            after_colon = cell.find(":") + 1
+            new = convert_col[first_letter] + cell[1:after_colon] + convert_col[cell[after_colon]] + cell[after_colon+1:]
             edr_sheet.merge_cells(new)
 
     try:

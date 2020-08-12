@@ -1,12 +1,13 @@
 """
 Function: pre-processing of .xml file and creating pandas dataframe for each test cases' data
 Author: Xinran Wang
-Date: 08/05/2020
+Date: 08/11/2020
 """
 
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import yaml
+
 
 # xml file pre-processing
 def open_xml(path):
@@ -54,13 +55,35 @@ def get_all_results(testcases):
         all_results.append(codes)
     return all_results
 
+def get_name(tc_code):
+    """
+    Get the names of testcases
+    :param tc_code: a list containing every test case's .xml text as separate elements (the output of parse_test_cases)
+    :return: a list containing all test case names
+    """
+    header_block = tc_code.find_all("header")[0]
+    name = header_block.find("tcnameunique").text
+    return name
+
+def check_status(tc_code):
+    """
+    Get the pass/fail status of each testcase
+    :param tc_code: a list containing every test case's .xml text as separate elements (the output of parse_test_cases)
+    :return: a list containing all test case's pass or fail status
+    """
+    status_val = tc_code.find_all("status")
+    for s in status_val:
+        result = str(s["value"])
+        if result == "fail":
+            return False
+    return True
+
 def generate_single_testcase(result_code):
     """
     For each test case's raw data, split the data into data type name and data results
     :param result_code: a list containing several strings representing the raw results
     :return: a tuple of two lists, one list contains the name of data type, another list contains the corresponding data list of every data type name
     """
-
     name_list = []
     data_list = []
     visited = {}
@@ -97,8 +120,9 @@ def combine_every_two_rows(to_combine):
 
 def generate_dataframe(name_lst, data_lst, wanted_FA = ["FA13", "FA14", "FA15"], wanted_B0 = ["B032", "B033", "B034", "B035", "B036", "B037", "B042", "B043", "B052", "B053"]):
     """
-    From the all-data dictionary of one test case, pick out the data we want and put them in dataframes
-    :param dictionary: a dictionary (the output of generate_single_testcase_dic)
+    From the name and data list of one test case, pick out the data we want and put them in dataframes
+    :param name_lst: the list containing all the names of data types
+    :param data_lst: the list containing the corresponding data of every data type
     :param wanted_FA: the EDR data type name we want (has default values, subject to changes)
     :param wanted_B0: the ACC data type name we want (has default values, subject to changes)
     :return: a tuple of two dataframes, one is EDR dataframe and another is ACC dataframe
@@ -138,4 +162,19 @@ def read_config(file_path):
     with open(file_path, "r", encoding='utf-8') as y_file:
         config_file = yaml.load(y_file, Loader=yaml.FullLoader)
     return config_file
+
+# if __name__ == "__main__":
+#     path = "R:\\Electronics Project\PSE\\PSE_System_Test\\Personal Folder\\Wang Xinran\\EDR_ACC_Data_Convert_Tool\\sc004_Deployment_AS22_R300.xml"
+#     cases = parse_test_cases(open_xml(path))
+#     c = cases[37]
+#     name = get_name(c)
+#     status = check_status(c)
+#     testcase_class = TestCase(c, name, status)
+#     print(testcase_class.name, testcase_class.status)
+#     testcase_class.update_name_and_data()
+#     print(testcase_class.name_l)
+#     print(testcase_class.data_l)
+#     print(c)
+
+
 
